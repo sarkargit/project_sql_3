@@ -1,0 +1,215 @@
+-- 1 -- select data
+select * from sales;
+--  2 --  How many unique cities does the data have?
+select  distinct city from sales;
+-- 3 -- How many unique product lines does the data have?
+select count(distinct product_line) from sales;
+-- 4 -- what is the most common payment meethod 
+select payment , count(payment) as cnt
+from sales
+group by payment
+order by cnt desc limit 1;
+-- 5 -- What is the most selling product line
+select product_line , count(product_line) as cnt
+from sales
+group by product_line
+order by cnt desc limit 1;
+-- 6 -- What is the total revenue by month
+SELECT 
+    month_name AS month, SUM(total) AS total_revenue
+FROM
+    sales
+GROUP BY month_name
+ORDER BY total_revenue DESC;
+-- 7 -- What month had the largest COGS?
+select 
+month_name as month,
+sum(cogs) as cogs
+from sales
+group by month_name
+order by cogs desc;
+-- 8 -- What product line had the largest revenue?
+select 
+product_line,
+sum(total) as total_revenue
+from sales
+group by product_line
+order by total_revenue desc limit 1 ;
+-- 9 -- What is the city with the largest revenue?
+select 
+city, branch,
+sum(total) as total_revenue
+from sales
+group by city , branch
+order by total_revenue desc limit 1 ;
+-- 10 -- -- What product line had the largest tax?
+SELECT
+	product_line,
+	AVG(tax_pct) as avg_tax
+FROM sales
+GROUP BY product_line
+ORDER BY avg_tax DESC limit 1;
+-- 11 
+ -- Fetch each product line and add a column to those product 
+ -- line showing "Good", "Bad". Good if its greater than average sales
+SELECT 
+	AVG(quantity) AS avg_qnty
+FROM sales;
+
+SELECT
+	product_line,
+	CASE
+		WHEN AVG(quantity) > 6 THEN "Good"
+        ELSE "Bad"
+    END AS remark
+FROM sales
+GROUP BY product_line;
+-- 12 -- -- Which branch sold more products than average product sold?
+select 
+branch,
+sum(quantity) as qty
+from sales
+group by branch
+having sum(quantity) > (select avg(quantity) from sales);
+-- 13 -- What is the most common product line by gender
+select 
+gender,
+product_line,
+count(gender) as total_cnt
+from sales
+group by gender , product_line
+order by total_cnt desc;
+-- 14 -- -- What is the average rating of each product line
+select 
+AVG(rating) AS avg_rating, 
+product_line
+from sales
+group by product_line
+order by avg_rating desc ; 
+-- 15 -- Number of sales made in each time of the day per weekday 
+select 
+time_of_day,
+count(*) as total_sales
+from sales
+where day_name = 'Monay'
+group by time_of_day
+order by total_sales desc;
+-- 16 -- Which of the customer types brings the most revenue?
+select 
+customer_type,
+sum(total) as total_rev
+from sales
+group by customer_type
+order by total_rev desc;
+-- 17-- Which city has the largest tax/VAT percent?
+SELECT
+	city,
+    ROUND(AVG(tax_pct), 2) AS avg_tax_pct
+FROM sales
+GROUP BY city 
+ORDER BY avg_tax_pct DESC;
+-- 18 -- Which customer type pays the most in VAT?
+SELECT
+	customer_type,
+    ROUND(AVG(tax_pct), 2) AS avg_tax_pct
+FROM sales
+GROUP BY customer_type 
+ORDER BY avg_tax_pct DESC;
+-- 19-- How many unique customer types does the data have?
+select 
+distinct customer_type
+from sales;
+-- 20 -- How many unique payment methods does the data have?
+select 
+ distinct payment
+from sales;
+-- 21 -- What is the most common customer type?
+SELECT
+	customer_type,
+	count(*) as count
+FROM sales
+GROUP BY customer_type
+ORDER BY count DESC;
+-- 22 -- Which customer type buys the most?
+select 
+ customer_type,
+ count(*) as cus_count
+from sales
+group by customer_type;
+-- 23 -- What is the gender of most of the customers?
+select 
+gender,
+count(*) as gender_cnt
+from sales
+group by gender
+order by gender_cnt;
+-- 24 -- What is the gender distribution per branch?
+select 
+gender,
+count(*) as gender_cnt
+from sales
+where branch = 'c'
+group by gender
+order by gender_cnt;
+
+select 
+gender,
+count(*) as gender_cnt
+from sales
+where branch = 'a'
+group by gender
+order by gender_cnt;
+
+select 
+gender,
+count(*) as gender_cnt
+from sales
+where branch = 'b'
+group by gender
+order by gender_cnt;
+-- 25 -- Which time of the day do customers give most ratings?
+select 
+time_of_day,
+avg(rating) as avg_rating
+from sales
+group by time_of_day
+order by avg_rating desc limit 1;
+-- 26 -- Which time of the day do customers give most ratings per branch?
+select 
+time_of_day,
+avg(rating) as avg_rating
+from sales
+where branch = "A"
+group by time_of_day
+order by avg_rating desc ;
+
+select 
+time_of_day,
+avg(rating) as avg_rating
+from sales
+where branch = "B"
+group by time_of_day
+order by avg_rating desc ;
+
+select 
+time_of_day,
+avg(rating) as avg_rating
+from sales
+where branch = "c"
+group by time_of_day
+order by avg_rating desc ;
+-- 27 -- Which day fo the week has the best avg ratings?
+SELECT
+	day_name,
+	AVG(rating) AS avg_rating
+FROM sales
+GROUP BY day_name 
+ORDER BY avg_rating DESC;
+-- 28 -- Which day of the week has the best average ratings per branch?
+SELECT 
+	day_name,
+	COUNT(day_name) total_sales
+FROM sales
+WHERE branch = "C"
+GROUP BY day_name
+ORDER BY total_sales DESC;
